@@ -30,6 +30,9 @@ int main(int argc, char *argv[]) {
     if (state.screenshot) {
         g_object_unref(state.screenshot);
     }
+    if (state.original_screenshot) {
+        g_object_unref(state.original_screenshot);
+    }
     if (state.detected_text) {
         free(state.detected_text);
     }

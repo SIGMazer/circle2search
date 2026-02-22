@@ -38,17 +38,29 @@ gboolean capture_screen(AppState *state) {
     
     // Convert XImage to GdkPixbuf
     guchar *pixels = g_malloc(width * height * 4);
+    guchar *original_pixels = g_malloc(width * height * 4);
     
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             unsigned long pixel = XGetPixel(image, x, y);
             int offset = (y * width + x) * 4;
             
-            // Extract RGB (assuming 24-bit or 32-bit display)
-            pixels[offset + 0] = (pixel >> 16) & 0xFF; // R
-            pixels[offset + 1] = (pixel >> 8) & 0xFF;  // G
-            pixels[offset + 2] = pixel & 0xFF;         // B
-            pixels[offset + 3] = 0xFF;                 // A (fully opaque)
+            // Extract RGB
+            guchar r = (pixel >> 16) & 0xFF;
+            guchar g = (pixel >> 8) & 0xFF;
+            guchar b = pixel & 0xFF;
+            
+            // Store original
+            original_pixels[offset + 0] = r;
+            original_pixels[offset + 1] = g;
+            original_pixels[offset + 2] = b;
+            original_pixels[offset + 3] = 0xFF;
+            
+            // Store dimmed version (50% darker)
+            pixels[offset + 0] = r / 2;
+            pixels[offset + 1] = g / 2;
+            pixels[offset + 2] = b / 2;
+            pixels[offset + 3] = 0xFF;
         }
     }
     
@@ -60,6 +72,18 @@ gboolean capture_screen(AppState *state) {
         width,
         height,
         width * 4,  // rowstride
+        pixbuf_free_wrapper,
+        NULL
+    );
+    
+    state->original_screenshot = gdk_pixbuf_new_from_data(
+        original_pixels,
+        GDK_COLORSPACE_RGB,
+        TRUE,
+        8,
+        width,
+        height,
+        width * 4,
         pixbuf_free_wrapper,
         NULL
     );

@@ -24,6 +24,7 @@ typedef struct {
     GtkWidget *window;
     GtkWidget *drawing_area;
     GdkPixbuf *screenshot;
+    GdkPixbuf *original_screenshot;
     cairo_surface_t *surface;
     
     // Selection coordinates

@@ -2,6 +2,8 @@
 
 // Draw callback - renders the screenshot and selection rectangle
 gboolean on_draw(GtkWidget *widget, cairo_t *cr, AppState *state) {
+    (void)widget;
+    
     // Draw the screenshot
     if (state->screenshot) {
         gdk_cairo_set_source_pixbuf(cr, state->screenshot, 0, 0);
@@ -15,17 +17,15 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, AppState *state) {
         int w = abs(state->end_x - state->start_x);
         int h = abs(state->end_y - state->start_y);
         
-        // Semi-transparent overlay
-        cairo_set_source_rgba(cr, 0, 0, 0, 0.5);
-        cairo_rectangle(cr, 0, 0, gtk_widget_get_allocated_width(widget), y);
-        cairo_fill(cr);
-        cairo_rectangle(cr, 0, y, x, h);
-        cairo_fill(cr);
-        cairo_rectangle(cr, x + w, y, gtk_widget_get_allocated_width(widget) - x - w, h);
-        cairo_fill(cr);
-        cairo_rectangle(cr, 0, y + h, gtk_widget_get_allocated_width(widget), 
-                       gtk_widget_get_allocated_height(widget) - y - h);
-        cairo_fill(cr);
+        // Draw the selected area with original brightness
+        if (state->original_screenshot) {
+            cairo_save(cr);
+            cairo_rectangle(cr, x, y, w, h);
+            cairo_clip(cr);
+            gdk_cairo_set_source_pixbuf(cr, state->original_screenshot, 0, 0);
+            cairo_paint(cr);
+            cairo_restore(cr);
+        }
         
         // Selection border - color based on detected mode
         if (state->selection_done) {
