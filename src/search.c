@@ -119,10 +119,9 @@ void search_image_selfhosted(const char *image_file) {
         
         system(command);
         printf("Opening Google Lens...\n");
-        printf("\nWaiting 30 seconds for Google to fetch image...\n");
         
-        // Wait for Google to fetch the image
-        sleep(30);
+        // Give browser a moment to start the request
+        sleep(2);
         
         printf("Cleaning up servers...\n");
         cleanup_servers();
