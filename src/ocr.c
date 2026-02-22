@@ -35,18 +35,19 @@ char* extract_text_from_region(AppState *state) {
         return NULL;
     }
     
-    // Initialize Tesseract
+    // Initialize Tesseract with multiple languages (Arabic + English)
     TessBaseAPI *api = TessBaseAPICreate();
-    if (TessBaseAPIInit3(api, NULL, "eng") != 0) {
-        fprintf(stderr, "Failed to initialize Tesseract\n");
-        TessBaseAPIDelete(api);
-        return NULL;
+    if (TessBaseAPIInit3(api, NULL, "ara+eng") != 0) {
+        // Fallback to English only if Arabic not available
+        if (TessBaseAPIInit3(api, NULL, "eng") != 0) {
+            fprintf(stderr, "Failed to initialize Tesseract\n");
+            TessBaseAPIDelete(api);
+            return NULL;
+        }
     }
     
-    // Set Tesseract to prioritize accuracy
-    TessBaseAPISetPageSegMode(api, PSM_AUTO);
-    TessBaseAPISetVariable(api, "tessedit_char_whitelist", 
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,!?@#$%&*()-+=/:;<>[]{}'\"");
+    // Set Tesseract to auto mode for best multilingual support
+    TessBaseAPISetPageSegMode(api, PSM_AUTO_OSD);
     
     // Load image with Leptonica
     PIX *image = pixRead(temp_file);
@@ -101,32 +102,43 @@ gboolean is_text_meaningful(const char *text) {
         return FALSE;
     }
     
-    int letter_count = 0;
-    int total_count = 0;
+    // Use GLib's UTF-8 functions for proper Unicode support
+    int char_count = 0;
+    int total_chars = 0;
     int word_count = 0;
     gboolean in_word = FALSE;
     
-    for (const char *p = text; *p; p++) {
-        total_count++;
-        if (isalpha(*p)) {
-            letter_count++;
+    const char *p = text;
+    while (*p) {
+        gunichar c = g_utf8_get_char(p);
+        total_chars++;
+        
+        // Check if character is a letter (supports all Unicode scripts including Arabic)
+        if (g_unichar_isalpha(c)) {
+            char_count++;
             if (!in_word) {
                 word_count++;
                 in_word = TRUE;
             }
-        } else if (isspace(*p)) {
+        } else if (g_unichar_isspace(c)) {
+            in_word = FALSE;
+        } else if (g_unichar_ispunct(c)) {
+            // Punctuation doesn't end word context
+        } else {
             in_word = FALSE;
         }
+        
+        p = g_utf8_next_char(p);
     }
     
     // Text is meaningful if:
-    // - Has at least 2 words OR
-    // - Has at least 3 characters and >50% are letters
-    if (word_count >= 2) {
+    // - Has at least 1 word with 2+ characters OR
+    // - Has at least 3 characters and >40% are letters
+    if (word_count >= 1 && char_count >= 2) {
         return TRUE;
     }
     
-    if (total_count >= 3 && letter_count * 2 > total_count) {
+    if (total_chars >= 3 && char_count * 5 > total_chars * 2) {
         return TRUE;
     }
     

@@ -22,8 +22,7 @@ case $OS in
             libx11-dev \
             libcairo2-dev \
             tesseract-ocr \
-            tesseract-ocr-eng \
-            python3 \
+            tesseract-ocr-eng \            tesseract-ocr-ara             python3 \
             openssh-client \
             pkg-config
         ;;
@@ -38,8 +37,7 @@ case $OS in
             libX11-devel \
             cairo-devel \
             tesseract \
-            tesseract-langpack-eng \
-            python3 \
+            tesseract-langpack-eng \            tesseract-langpack-ara             python3 \
             openssh-clients \
             pkg-config
         ;;
@@ -49,8 +47,7 @@ case $OS in
             base-devel \
             gtk3 \
             tesseract \
-            tesseract-data-eng \
-            leptonica \
+            tesseract-data-eng \            tesseract-data-ara             leptonica \
             libx11 \
             cairo \
             python \
