@@ -2,7 +2,7 @@
 
 // Extract text from the selected region using Tesseract OCR
 char* extract_text_from_region(AppState *state) {
-    if (!state->screenshot || !state->selection_done) {
+    if (!state->original_screenshot || !state->selection_done) {
         return NULL;
     }
     
@@ -16,8 +16,8 @@ char* extract_text_from_region(AppState *state) {
         return NULL;
     }
     
-    // Create a sub-pixbuf of the selected region
-    GdkPixbuf *region = gdk_pixbuf_new_subpixbuf(state->screenshot, x, y, width, height);
+    // Create a sub-pixbuf of the selected region from the ORIGINAL screenshot
+    GdkPixbuf *region = gdk_pixbuf_new_subpixbuf(state->original_screenshot, x, y, width, height);
     if (!region) {
         fprintf(stderr, "Failed to create region pixbuf\n");
         return NULL;

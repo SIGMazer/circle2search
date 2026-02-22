@@ -171,7 +171,7 @@ void on_search_clicked(GtkWidget *widget, AppState *state) {
         int height = abs(state->end_y - state->start_y);
         
         if (width > 0 && height > 0) {
-            GdkPixbuf *region = gdk_pixbuf_new_subpixbuf(state->screenshot, x, y, width, height);
+            GdkPixbuf *region = gdk_pixbuf_new_subpixbuf(state->original_screenshot, x, y, width, height);
             if (region) {
                 const char *temp_file = "/tmp/circle2search_image.png";
                 GError *error = NULL;
