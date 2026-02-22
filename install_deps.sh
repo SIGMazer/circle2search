@@ -11,8 +11,8 @@ else
 fi
 
 case $OS in
-    ubuntu|debian)
-        echo "Detected Ubuntu/Debian"
+    ubuntu|debian|linuxmint|mint)
+        echo "Detected Ubuntu/Debian/Mint"
         sudo apt-get update
         sudo apt-get install -y \
             build-essential \
