@@ -1,0 +1,16 @@
+# Build artifacts
+build/
+
+# Temporary files
+screenshot.png
+/tmp/circle2search_*
+
+# Backup files
+*.backup
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,34 @@
+# Circle2Search
+
+Desktop screen capture tool with smart text/image detection and instant search.
+
+## Installation
+
+### Install Dependencies
+
+```bash
+chmod +x install_deps.sh
+./install_deps.sh
+```
+
+### Build
+
+```bash
+make
+```
+
+## Usage
+
+```bash
+./build/circle2search
+```
+
+1. **Select** - Click and drag to select any screen area
+2. **Auto-detect** - Text or image is detected automatically
+3. **Search** - Click the search button or press ESC to cancel
+
+### Tips
+
+- Normal drag: Auto-detects text or image
+- Ctrl + drag: Force image search mode
+- ESC: Exit without searching
