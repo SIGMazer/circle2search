@@ -190,3 +190,27 @@ void on_search_clicked(GtkWidget *widget, AppState *state) {
         }
     }
 }
+
+void on_translate_clicked(GtkWidget *widget, AppState *state) {
+    (void)widget;
+    
+    if (!state->detected_text) return;
+    
+    char *encoded_text = url_encode(state->detected_text);
+    if (encoded_text) {
+        char url[8192];
+        int url_len = snprintf(url, sizeof(url), "https://translate.google.com/?sl=auto&tl=auto&text=%s", encoded_text);
+        
+        if (url_len > 0 && url_len < (int)sizeof(url)) {
+            char *command = malloc(url_len + 20);
+            if (command) {
+                sprintf(command, "xdg-open '%s' &", url);
+                system(command);
+                free(command);
+            }
+        }
+        
+        free(encoded_text);
+        gtk_main_quit();
+    }
+}

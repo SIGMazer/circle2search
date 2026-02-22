@@ -43,66 +43,67 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, AppState *state) {
         
         // Draw detected text preview (Android style)
         if (state->selection_done && state->detected_text && state->mode == MODE_TEXT) {
-            // Create semi-transparent background for text
             int text_y = (y > 60) ? y - 50 : y + h + 10;
             
-            // Measure text
-            cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-            cairo_set_font_size(cr, 16);
-            cairo_text_extents_t extents;
-            
-            // Truncate long text
-            char preview[100];
-            strncpy(preview, state->detected_text, 95);
-            preview[95] = '\0';
-            if (strlen(state->detected_text) > 95) {
+            char preview[600];
+            g_utf8_strncpy(preview, state->detected_text, 190);
+            if (g_utf8_strlen(state->detected_text, -1) > 190) {
                 strcat(preview, "...");
             }
             
-            // Replace newlines with spaces
             for (char *p = preview; *p; p++) {
                 if (*p == '\n' || *p == '\r') *p = ' ';
             }
             
-            cairo_text_extents(cr, preview, &extents);
+            PangoLayout *layout = pango_cairo_create_layout(cr);
+            PangoFontDescription *font_desc = pango_font_description_from_string("Sans Bold 16");
+            pango_layout_set_font_description(layout, font_desc);
+            pango_layout_set_text(layout, preview, -1);
             
-            int text_width = extents.width + 20;
-            int text_height = extents.height + 16;
+            int text_width, text_height;
+            pango_layout_get_pixel_size(layout, &text_width, &text_height);
+            
+            text_width += 20;
+            text_height += 16;
             int text_x = x + (w - text_width) / 2;
             
-            // Draw background
             cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.9);
             cairo_rectangle(cr, text_x, text_y, text_width, text_height);
             cairo_fill(cr);
             
-            // Draw text
             cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
-            cairo_move_to(cr, text_x + 10, text_y + text_height - 8);
-            cairo_show_text(cr, preview);
+            cairo_move_to(cr, text_x + 10, text_y + 8);
+            pango_cairo_show_layout(cr, layout);
+            
+            pango_font_description_free(font_desc);
+            g_object_unref(layout);
         } else if (state->selection_done && state->mode == MODE_IMAGE) {
-            // Show "Image" indicator
             int label_y = (y > 40) ? y - 30 : y + h + 10;
             
-            cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-            cairo_set_font_size(cr, 14);
-            
             const char *label = "📷 Image";
-            cairo_text_extents_t extents;
-            cairo_text_extents(cr, label, &extents);
             
-            int label_width = extents.width + 20;
-            int label_height = extents.height + 12;
+            PangoLayout *layout = pango_cairo_create_layout(cr);
+            PangoFontDescription *font_desc = pango_font_description_from_string("Sans Bold 14");
+            pango_layout_set_font_description(layout, font_desc);
+            pango_layout_set_text(layout, label, -1);
+            
+            int label_width, label_height;
+            pango_layout_get_pixel_size(layout, &label_width, &label_height);
+            
+            label_width += 20;
+            label_height += 12;
             int label_x = x + (w - label_width) / 2;
             
-            // Draw background
             cairo_set_source_rgba(cr, 1.0, 0.4, 0.2, 0.9);
             cairo_rectangle(cr, label_x, label_y, label_width, label_height);
             cairo_fill(cr);
             
-            // Draw text
             cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
-            cairo_move_to(cr, label_x + 10, label_y + label_height - 6);
-            cairo_show_text(cr, label);
+            cairo_move_to(cr, label_x + 10, label_y + 6);
+            pango_cairo_show_layout(cr, layout);
+            
+            pango_font_description_free(font_desc);
+            g_object_unref(layout);
         }
     }
     
@@ -155,8 +156,12 @@ gboolean on_button_release(GtkWidget *widget, GdkEventButton *event, AppState *s
         
         gtk_widget_queue_draw(widget);
         
-        // Show search button
         gtk_widget_set_visible(state->search_button, TRUE);
+        if (state->mode == MODE_TEXT) {
+            gtk_widget_set_visible(state->translate_button, TRUE);
+        } else {
+            gtk_widget_set_visible(state->translate_button, FALSE);
+        }
     }
     return TRUE;
 }
@@ -194,17 +199,23 @@ void create_overlay_window(AppState *state) {
     GtkWidget *overlay_container = gtk_overlay_new();
     gtk_container_add(GTK_CONTAINER(state->window), overlay_container);
     
-    // Drawing area for screenshot
     state->drawing_area = gtk_drawing_area_new();
     gtk_container_add(GTK_CONTAINER(overlay_container), state->drawing_area);
     
-    // Search button as overlay (initially hidden)
+    GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_widget_set_halign(button_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(button_box, GTK_ALIGN_END);
+    gtk_widget_set_margin_bottom(button_box, 50);
+    
+    state->translate_button = gtk_button_new_with_label("🌐 Translate");
     state->search_button = gtk_button_new_with_label("🔍 Search");
-    gtk_widget_set_halign(state->search_button, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(state->search_button, GTK_ALIGN_END);
-    gtk_widget_set_margin_bottom(state->search_button, 50);
-    gtk_overlay_add_overlay(GTK_OVERLAY(overlay_container), state->search_button);
+    
+    gtk_box_pack_start(GTK_BOX(button_box), state->translate_button, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(button_box), state->search_button, FALSE, FALSE, 0);
+    
+    gtk_overlay_add_overlay(GTK_OVERLAY(overlay_container), button_box);
     gtk_widget_set_visible(state->search_button, FALSE);
+    gtk_widget_set_visible(state->translate_button, FALSE);
     
     // Enable mouse events
     gtk_widget_add_events(state->drawing_area,
@@ -222,8 +233,11 @@ void create_overlay_window(AppState *state) {
     g_signal_connect(state->drawing_area, "motion-notify-event", 
                      G_CALLBACK(on_motion_notify), state);
     g_signal_connect(state->search_button, "clicked", G_CALLBACK(on_search_clicked), state);
+    g_signal_connect(state->translate_button, "clicked", G_CALLBACK(on_translate_clicked), state);
     
-    // Show window
     gtk_widget_show_all(state->window);
     gtk_widget_set_visible(state->search_button, FALSE);
+    gtk_widget_set_visible(state->translate_button, FALSE);
+    
+    gtk_widget_queue_draw(state->drawing_area);
 }

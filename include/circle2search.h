@@ -11,6 +11,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 // Selection mode
 typedef enum {
@@ -42,6 +43,7 @@ typedef struct {
     
     // UI elements
     GtkWidget *search_button;
+    GtkWidget *translate_button;
 } AppState;
 
 // Function declarations
@@ -62,6 +64,7 @@ char* extract_text_from_region(AppState *state);
 // search.c
 void open_browser_with_search(const char *query, SelectionMode mode);
 void on_search_clicked(GtkWidget *widget, AppState *state);
+void on_translate_clicked(GtkWidget *widget, AppState *state);
 gboolean is_text_meaningful(const char *text);
 
 #endif

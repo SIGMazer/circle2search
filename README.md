@@ -1,6 +1,6 @@
 # Circle2Search
 
-Desktop screen capture tool with smart text/image detection and instant search.
+Desktop screen capture tool with smart text/image detection, instant search, and translation.
 
 ## Installation
 
@@ -25,7 +25,8 @@ make
 
 1. **Select** - Click and drag to select any screen area
 2. **Auto-detect** - Text or image is detected automatically
-3. **Search** - Click the search button or press ESC to cancel
+3. **Translate** (text only) - Click translate to open Google Translate with the selected text
+4. **Search** - Click the search button or press ESC to cancel
 
 ### Tips
 
