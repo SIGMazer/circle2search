@@ -1,6 +1,7 @@
-# Circle2Search
+# Circle2Search - Circle to Search
 
-Desktop screen capture tool with smart text/image detection, instant search, and translation.
+
+A lightweight Linux utility that mimics Google's 'Circle to Search
 
 ## Installation
 
