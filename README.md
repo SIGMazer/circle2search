@@ -1,6 +1,7 @@
 # Circle2Search
 
 Desktop screen capture tool with smart text/image detection, instant search, and translation.
+**Supports both X11 and Wayland!**
 
 **Index:**
 - [Installation](#installation)
@@ -8,7 +9,6 @@ Desktop screen capture tool with smart text/image detection, instant search, and
   - [nixos](#for-nixos)
 - [Usage](#usage)
 
-**Supports both X11 and Wayland!**
 
 ## Installation
 
