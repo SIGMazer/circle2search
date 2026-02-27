@@ -46,8 +46,8 @@ char* extract_text_from_region(AppState *state) {
         }
     }
     
-    // Set Tesseract to auto mode for best multilingual support
-    TessBaseAPISetPageSegMode(api, PSM_AUTO_OSD);
+    // Use PSM_AUTO - works without osd.traineddata
+    TessBaseAPISetPageSegMode(api, PSM_AUTO);
     
     // Load image with Leptonica
     PIX *image = pixRead(temp_file);

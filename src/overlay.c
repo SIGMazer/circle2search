@@ -179,12 +179,31 @@ gboolean on_motion_notify(GtkWidget *widget, GdkEventMotion *event, AppState *st
 // Key press - handle ESC
 gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, AppState *state) {
     (void)widget;
-    (void)state;
     
     if (event->keyval == GDK_KEY_Escape) {
         gtk_main_quit();
         return TRUE;
     }
+    
+    // Ctrl+C to copy detected text
+    if ((event->state & GDK_CONTROL_MASK) && (event->keyval == GDK_KEY_c || event->keyval == GDK_KEY_C)) {
+        if (state->detected_text && state->mode == MODE_TEXT) {
+            // Use xclip to copy to clipboard
+            FILE *pipe = popen("xclip -selection clipboard", "w");
+            if (pipe) {
+                fprintf(pipe, "%s", state->detected_text);
+                pclose(pipe);
+                printf("Text copied to clipboard: %s\n", state->detected_text);
+            } else {
+                printf("Failed to copy: xclip not available\n");
+            }
+            return TRUE;
+        } else {
+            printf("Cannot copy: detected_text=%p, mode=%d\n", 
+                   (void*)state->detected_text, state->mode);
+        }
+    }
+    
     return FALSE;
 }
 

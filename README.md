@@ -34,6 +34,7 @@ make
 
 - Normal drag: Auto-detects text or image
 - Ctrl + drag: Force image search mode
+- **Ctrl + C**: Copy detected text to clipboard (text mode only)
 - ESC: Exit without searching
 
 ### Display Server Support
