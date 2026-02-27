@@ -2,12 +2,15 @@
 
 Desktop screen capture tool with smart text/image detection, instant search, and translation.
 
+**Index:**
+- [Installation](#installation)
+  - [general](#install-dependencies)
+  - [nixos](#for-nixos)
+- [Usage](#usage)
+
 **Supports both X11 and Wayland!**
 
 ## Installation
-
-- [general](#install-dependencies)
-- [nixos](#for-nixos)
 
 ### Install Dependencies
 
@@ -16,10 +19,16 @@ chmod +x install_deps.sh
 ./install_deps.sh
 ```
 
-### Build
+#### Build
 
 ```bash
 make
+```
+
+#### Run
+
+```bash
+./build/circle2search
 ```
 
 ### For NixOS
@@ -56,10 +65,6 @@ in {
 ```
 
 ## Usage
-
-```bash
-./build/circle2search
-```
 
 1. **Select** - Click and drag to select any screen area
 2. **Auto-detect** - Text or image is detected automatically
