@@ -35,4 +35,8 @@ install: $(TARGET)
 uninstall:
 	rm -f /usr/local/bin/circle2search
 
-.PHONY: all clean run install uninstall
+static:
+	$(CC) $(CFLAGS) $(SOURCES) -o $(BUILDDIR)/circle2search-static -static $(LDFLAGS) || \
+	$(CC) $(CFLAGS) $(SOURCES) -o $(BUILDDIR)/circle2search-static $(LDFLAGS)
+
+.PHONY: all clean run install uninstall static
