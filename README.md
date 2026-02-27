@@ -38,7 +38,7 @@ In `/etc/nixos/configuration.nix` file
 { pkgs, ... }: # your args
 let
   # Flake file location
-  circle2search = builtins.getFlake "github:SIGMazer/circle2search/master";
+  circle2search = builtins.getFlake "github:SIGMazer/circle2search/8a4576642efb926d2bf6e4d0c0a325a83439e8c8";
 in {
   # System packages
   environment.systemPackages = with pkgs; [ 
