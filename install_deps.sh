@@ -22,8 +22,11 @@ case $OS in
             libx11-dev \
             libcairo2-dev \
             tesseract-ocr \
-            tesseract-ocr-eng \            tesseract-ocr-ara             python3 \
+            tesseract-ocr-eng \
+            tesseract-ocr-ara \
+            python3 \
             openssh-client \
+            grim \
             pkg-config
         ;;
     fedora|rhel|centos)
@@ -37,8 +40,11 @@ case $OS in
             libX11-devel \
             cairo-devel \
             tesseract \
-            tesseract-langpack-eng \            tesseract-langpack-ara             python3 \
+            tesseract-langpack-eng \
+            tesseract-langpack-ara \
+            python3 \
             openssh-clients \
+            grim \
             pkg-config
         ;;
     arch|manjaro)
@@ -47,11 +53,14 @@ case $OS in
             base-devel \
             gtk3 \
             tesseract \
-            tesseract-data-eng \            tesseract-data-ara             leptonica \
+            tesseract-data-eng \
+            tesseract-data-ara \
+            leptonica \
             libx11 \
             cairo \
             python \
             openssh \
+            grim \
             pkg-config
         ;;
     *)

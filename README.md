@@ -1,7 +1,8 @@
-# Circle2Search - Circle to Search
+# Circle2Search
 
+Desktop screen capture tool with smart text/image detection, instant search, and translation.
 
-A lightweight Linux utility that mimics Google's 'Circle to Search
+**Supports both X11 and Wayland!**
 
 ## Installation
 
@@ -34,3 +35,8 @@ make
 - Normal drag: Auto-detects text or image
 - Ctrl + drag: Force image search mode
 - ESC: Exit without searching
+
+### Display Server Support
+
+- **X11**: Native support using X11 screen capture
+- **Wayland**: Requires `grim` for screen capture (installed via install_deps.sh)
