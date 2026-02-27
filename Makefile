@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -Iinclude `pkg-config --cflags gtk+-3.0 tesseract lept x11`
+VERSION := $(shell cat VERSION)
+CFLAGS = -Wall -Wextra -O2 -Iinclude -DVERSION=\"$(VERSION)\" `pkg-config --cflags gtk+-3.0 tesseract lept x11`
 LDFLAGS = -L/usr/lib64 `pkg-config --libs gtk+-3.0 tesseract lept x11`
 
 SRCDIR = src

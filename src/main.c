@@ -1,6 +1,33 @@
 #include "circle2search.h"
+#include <signal.h>
+
+#ifndef VERSION
+#define VERSION "unknown"
+#endif
 
 int main(int argc, char *argv[]) {
+    // Handle version flag
+    if (argc > 1) {
+        if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+            printf("circle2search version %s\n", VERSION);
+            return 0;
+        }
+    }
+    
+    // Check if another instance is already running
+    FILE *check = popen("pgrep -c -x circle2search", "r");
+    if (check) {
+        int count = 0;
+        fscanf(check, "%d", &count);
+        pclose(check);
+        
+        // If more than 1 instance (current process is already counted)
+        if (count > 1) {
+            fprintf(stderr, "circle2search is already running\n");
+            return 0;
+        }
+    }
+    
     // Initialize GTK
     gtk_init(&argc, &argv);
     
