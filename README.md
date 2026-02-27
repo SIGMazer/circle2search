@@ -6,6 +6,9 @@ Desktop screen capture tool with smart text/image detection, instant search, and
 
 ## Installation
 
+- [general](#install-dependencies)
+- [nixos](#for-nixos)
+
 ### Install Dependencies
 
 ```bash
@@ -17,6 +20,39 @@ chmod +x install_deps.sh
 
 ```bash
 make
+```
+
+### For NixOS
+Terminal session (for test)
+```sh
+git clone https://github.com/SIGMazer/circle2search.git
+cd circle2search
+nix develop
+make
+./build/circle2search
+```
+System-Wide
+
+In `/etc/nixos/configuration.nix` file
+```nix
+{ pkgs, ... }: # your args
+let
+  # Flake file location
+  circle2search = builtins.getFlake "github:SIGMazer/circle2search/master";
+in {
+  # System packages
+  environment.systemPackages = with pkgs; [ 
+    circle2search.packages.x86_64-linux.default
+  ];
+
+  # OR User packages
+  users.users.username = {
+    packages = with pkgs; [
+      circle2search.packages.x86_64-linux.default
+    ];
+  };
+}
+
 ```
 
 ## Usage
